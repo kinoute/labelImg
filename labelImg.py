@@ -1088,6 +1088,7 @@ class MainWindow(QMainWindow, WindowMixin):
             if self.labelFile:
                 self.loadLabels(self.labelFile.shapes)
             self.setClean()
+            self.setDirty()
             self.canvas.setEnabled(True)
             self.adjustScale(initial=True)
             self.paintCanvas()
@@ -1584,15 +1585,19 @@ def get_main_app(argv=[]):
     # Tzutalin 201705+: Accept extra agruments to change predefined class file
     argparser = argparse.ArgumentParser()
     argparser.add_argument("image_dir", nargs="?")
-    argparser.add_argument("predefined_classes_file",
-                           default=os.path.join(os.path.dirname(__file__), "data", "predefined_classes.txt"),
-                           nargs="?")
-    argparser.add_argument("save_dir", nargs="?")
     args = argparser.parse_args(argv[1:])
+
+    # force the use of the main classes.txt
+    predefined_classes_file = os.path.abspath(os.path.join(args.image_dir, os.pardir)) + "/classes.txt"
+    print(predefined_classes_file)
+
+    # force the save of annotations within images folder
+    save_dir = args.image_dir
+
     # Usage : labelImg.py image predefClassFile saveDir
     win = MainWindow(args.image_dir,
-                     args.predefined_classes_file,
-                     args.save_dir)
+                     predefined_classes_file,
+                     save_dir)
     win.show()
     return app, win
 
