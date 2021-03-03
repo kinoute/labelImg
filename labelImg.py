@@ -98,7 +98,7 @@ class MainWindow(QMainWindow, WindowMixin):
         self.lastOpenDir = None
 
         # Whether we need to save or not.
-        self.dirty = False
+        self.dirty = True
 
         self._noSelectionSlot = False
         self._beginner = True
@@ -201,6 +201,7 @@ class MainWindow(QMainWindow, WindowMixin):
 
         self.dockFeatures = QDockWidget.DockWidgetClosable | QDockWidget.DockWidgetFloatable
         self.dock.setFeatures(self.dock.features() ^ self.dockFeatures)
+
 
         # Actions
         action = partial(newAction, self)
@@ -381,7 +382,7 @@ class MainWindow(QMainWindow, WindowMixin):
         # Auto saving : Enable auto saving if pressing next
         self.autoSaving = QAction(getStr('autoSaveMode'), self)
         self.autoSaving.setCheckable(True)
-        self.autoSaving.setChecked(settings.get(SETTING_AUTO_SAVE, False))
+        self.autoSaving.setChecked(settings.get(SETTING_AUTO_SAVE, True))
         # Sync single class mode from PR#106
         self.singleClassMode = QAction(getStr('singleClsMode'), self)
         self.singleClassMode.setShortcut("Ctrl+Shift+S")
@@ -1168,8 +1169,8 @@ class MainWindow(QMainWindow, WindowMixin):
         return w / self.canvas.pixmap.width()
 
     def closeEvent(self, event):
-        if not self.mayContinue():
-            event.ignore()
+        # if not self.mayContinue():
+        #     event.ignore()
         settings = self.settings
         # If it loads images from dir, don't load it at the begining
         if self.dirname is None:
@@ -1202,8 +1203,7 @@ class MainWindow(QMainWindow, WindowMixin):
         settings.save()
 
     def loadRecent(self, filename):
-        if self.mayContinue():
-            self.loadFile(filename)
+        self.loadFile(filename)
 
     def scanAllImages(self, folderPath):
         extensions = ['.%s' % fmt.data().decode("ascii").lower() for fmt in QImageReader.supportedImageFormats()]
@@ -1252,8 +1252,8 @@ class MainWindow(QMainWindow, WindowMixin):
             self.loadPascalXMLByFilename(filename)
 
     def openDirDialog(self, _value=False, dirpath=None, silent=False):
-        if not self.mayContinue():
-            return
+        # if not self.mayContinue():
+        #     return
 
         defaultOpenDirPath = dirpath if dirpath else '.'
         if self.lastOpenDir and os.path.exists(self.lastOpenDir):
@@ -1270,8 +1270,8 @@ class MainWindow(QMainWindow, WindowMixin):
         self.importDirImages(targetDirPath)
 
     def importDirImages(self, dirpath):
-        if not self.mayContinue() or not dirpath:
-            return
+        # if not self.mayContinue() or not dirpath:
+        #     return
 
         self.lastOpenDir = dirpath
         self.dirname = dirpath
@@ -1311,8 +1311,8 @@ class MainWindow(QMainWindow, WindowMixin):
                 self.changeSavedirDialog()
                 return
 
-        if not self.mayContinue():
-            return
+        # if not self.mayContinue():
+        #     return
 
         if len(self.mImgList) <= 0:
             return
@@ -1336,8 +1336,8 @@ class MainWindow(QMainWindow, WindowMixin):
                 self.changeSavedirDialog()
                 return
 
-        if not self.mayContinue():
-            return
+        # if not self.mayContinue():
+        #     return
 
         if len(self.mImgList) <= 0:
             return
@@ -1354,8 +1354,8 @@ class MainWindow(QMainWindow, WindowMixin):
             self.loadFile(filename)
 
     def openFile(self, _value=False):
-        if not self.mayContinue():
-            return
+        # if not self.mayContinue():
+        #     return
         path = os.path.dirname(ustr(self.filePath)) if self.filePath else '.'
         formats = ['*.%s' % fmt.data().decode("ascii").lower() for fmt in QImageReader.supportedImageFormats()]
         filters = "Image & Label files (%s)" % ' '.join(formats + ['*%s' % LabelFile.suffix])
@@ -1409,8 +1409,8 @@ class MainWindow(QMainWindow, WindowMixin):
             self.statusBar().show()
 
     def closeFile(self, _value=False):
-        if not self.mayContinue():
-            return
+        # if not self.mayContinue():
+        #     return
         self.resetState()
         self.setClean()
         self.toggleActions(False)
