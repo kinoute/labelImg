@@ -1095,9 +1095,8 @@ class MainWindow(QMainWindow, WindowMixin):
             self.paintCanvas()
             self.addRecentFile(self.filePath)
             self.toggleActions(True)
+            self.setWindowTitle(filePath)
             self.showBoundingBoxFromAnnotationFile(filePath)
-
-            self.setWindowTitle(__appname__ + ' ' + filePath)
 
             # Default : select last item if there is at least one item
             if self.labelList.count():
@@ -1281,7 +1280,17 @@ class MainWindow(QMainWindow, WindowMixin):
         self.openNextImg()
         for imgPath in self.mImgList:
             item = QListWidgetItem(imgPath)
+            if self.checkForYoloFile(imgPath):
+                item.setBackground(QColor("#82E0AA"))
+                item.setText("✅ " + imgPath)
             self.fileListWidget.addItem(item)
+
+    def checkForYoloFile(self, imgPath):
+        basename = os.path.basename(os.path.splitext(imgPath)[0])
+        filedir = imgPath.split(basename)[0].split(os.path.sep)[-2:-1][0]
+        txtPath = os.path.join(self.defaultSaveDir, basename + TXT_EXT)
+        return os.path.isfile(txtPath)
+
 
     def verifyImg(self, _value=False):
         # Proceding next image without dialog if having any label
@@ -1533,6 +1542,12 @@ class MainWindow(QMainWindow, WindowMixin):
         print (shapes)
         self.loadLabels(shapes)
         self.canvas.verified = tYoloParseReader.verified
+
+        # add visual feedback about the analyze of the image
+        self.setWindowTitle("✅ " + self.filePath)
+        self.status("✅ " + self.filePath)
+        self.canvas.verified = True
+        self.paintCanvas()
 
     def loadCreateMLJSONByFilename(self, jsonPath, filePath):
         if self.filePath is None:
