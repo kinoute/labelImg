@@ -857,6 +857,12 @@ class MainWindow(QMainWindow, WindowMixin):
                     annotationFilePath += TXT_EXT
                 self.labelFile.saveYoloFormat(annotationFilePath, shapes, self.filePath, self.imageData, self.labelHist,
                                               self.lineColor.getRgb(), self.fillColor.getRgb())
+                # update the file list
+                index = self.mImgList.index(self.filePath)
+                fileWidgetItem = self.fileListWidget.item(index)
+                fileWidgetItem.setText("✅ " + self.filePath)
+                fileWidgetItem.setBackground(QColor("#82E0AA"))
+
             elif self.labelFileFormat == LabelFileFormat.CREATE_ML:
                 if annotationFilePath[-5:].lower() != ".json":
                     annotationFilePath += JSON_EXT
