@@ -860,7 +860,6 @@ class MainWindow(QMainWindow, WindowMixin):
                 # update the file list
                 index = self.mImgList.index(self.filePath)
                 fileWidgetItem = self.fileListWidget.item(index)
-                fileWidgetItem.setText("✅ " + self.filePath)
                 fileWidgetItem.setBackground(QColor("#82E0AA"))
 
             elif self.labelFileFormat == LabelFileFormat.CREATE_ML:
@@ -1288,7 +1287,6 @@ class MainWindow(QMainWindow, WindowMixin):
             item = QListWidgetItem(imgPath)
             if self.checkForYoloFile(imgPath):
                 item.setBackground(QColor("#82E0AA"))
-                item.setText("✅ " + imgPath)
             self.fileListWidget.addItem(item)
 
     def checkForYoloFile(self, imgPath):
