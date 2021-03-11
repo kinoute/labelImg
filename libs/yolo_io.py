@@ -54,6 +54,9 @@ class YOLOWriter:
         out_file = None #Update yolo .txt
         out_class_file = None   #Update class list .txt
 
+        if not os.path.exists(os.path.dirname(targetFile)):
+            os.makedirs(os.path.dirname(targetFile))
+
         if targetFile is None:
             out_file = open(
             self.filename + TXT_EXT, 'w', encoding=ENCODE_METHOD)
