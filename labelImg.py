@@ -1966,6 +1966,9 @@ def get_main_app(argv=[]):
         args.image_dir.split(".")[-1], 1
     )[0]
 
+    print(args.image_dir)
+    print(save_dir)
+
     # Usage : labelImg.py image predefClassFile saveDir
     win = MainWindow(args.image_dir, predefined_classes_file, save_dir)
     win.show()
