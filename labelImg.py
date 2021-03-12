@@ -1952,6 +1952,8 @@ def get_main_app(argv=[]):
     argparser.add_argument("image_dir", nargs="?")
     args = argparser.parse_args(argv[1:])
 
+    img_dir = os.path.abspath(".") + "/" + args.image_dir
+
     # force the use of the main classes.txt
     predefined_classes_file = os.path.abspath(".") + "/classes.txt"
     print(predefined_classes_file)
@@ -1962,15 +1964,13 @@ def get_main_app(argv=[]):
     )  # /images/, /labels/ substrings
 
     # force the save of annotations within "labels" folder
-    save_dir = args.image_dir.replace(sa, sb, 1).rsplit(
-        args.image_dir.split(".")[-1], 1
-    )[0]
+    save_dir = img_dir.replace(sa, sb, 1).rsplit(img_dir.split(".")[-1], 1)[0]
 
-    print(args.image_dir)
+    print(img_dir)
     print(save_dir)
 
     # Usage : labelImg.py image predefClassFile saveDir
-    win = MainWindow(args.image_dir, predefined_classes_file, save_dir)
+    win = MainWindow(img_dir, predefined_classes_file, save_dir)
     win.show()
     return app, win
 
