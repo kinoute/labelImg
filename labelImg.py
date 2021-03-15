@@ -92,7 +92,7 @@ class MainWindow(QMainWindow, WindowMixin):
         # Save as Pascal voc xml
         self.defaultSaveDir = defaultSaveDir
         self.labelFileFormat = settings.get(
-            SETTING_LABEL_FILE_FORMAT, LabelFileFormat.PASCAL_VOC
+            SETTING_LABEL_FILE_FORMAT, LabelFileFormat.YOLO
         )
 
         # For loading all image under a directory
@@ -252,14 +252,6 @@ class MainWindow(QMainWindow, WindowMixin):
 
         openPrevImg = action(
             getStr("prevImg"), self.openPrevImg, "a", "prev", getStr("prevImgDetail")
-        )
-
-        verify = action(
-            getStr("verifyImg"),
-            self.verifyImg,
-            "space",
-            "verify",
-            getStr("verifyImgDetail"),
         )
 
         save = action(
@@ -643,7 +635,6 @@ class MainWindow(QMainWindow, WindowMixin):
             changeSavedir,
             openNextImg,
             openPrevImg,
-            verify,
             save,
             save_format,
             None,
@@ -686,7 +677,7 @@ class MainWindow(QMainWindow, WindowMixin):
         self.lineColor = None
         self.fillColor = None
         self.zoom_level = 100
-        self.fit_window = False
+        self.fit_window = True
         # Add Chris
         self.difficult = False
 
@@ -965,6 +956,7 @@ class MainWindow(QMainWindow, WindowMixin):
             menu.addAction(action)
 
     def popLabelListMenu(self, point):
+        print("here")
         self.menus.labelList.exec_(self.labelList.mapToGlobal(point))
 
     def editLabel(self):
@@ -986,6 +978,7 @@ class MainWindow(QMainWindow, WindowMixin):
         if currIndex < len(self.mImgList):
             filename = self.mImgList[currIndex]
             if filename:
+                self.saveFile()
                 self.loadFile(filename)
 
     # Add chris
@@ -1210,7 +1203,6 @@ class MainWindow(QMainWindow, WindowMixin):
     # Callback functions:
     def newShape(self):
         """Pop-up and give focus to the label editor.
-
         position MUST be in global coordinates.
         """
         if (
@@ -1242,6 +1234,7 @@ class MainWindow(QMainWindow, WindowMixin):
             else:
                 self.actions.editMode.setEnabled(True)
             self.setDirty()
+            # self.saveFile()
 
             if text not in self.labelHist:
                 self.labelHist.append(text)
@@ -1511,12 +1504,13 @@ class MainWindow(QMainWindow, WindowMixin):
         else:
             settings[SETTING_LAST_OPEN_DIR] = ""
 
-        settings[SETTING_AUTO_SAVE] = self.autoSaving.isChecked()
+        settings[SETTING_AUTO_SAVE] = True
         settings[SETTING_SINGLE_CLASS] = self.singleClassMode.isChecked()
         settings[SETTING_PAINT_LABEL] = self.displayLabelOption.isChecked()
         settings[SETTING_DRAW_SQUARE] = self.drawSquaresOption.isChecked()
-        settings[SETTING_LABEL_FILE_FORMAT] = self.labelFileFormat
+        settings[SETTING_LABEL_FILE_FORMAT] = LabelFileFormat.YOLO
         settings.save()
+        self.saveFile()
 
     def loadRecent(self, filename):
         self.loadFile(filename)
@@ -1952,7 +1946,10 @@ def get_main_app(argv=[]):
     argparser.add_argument("image_dir", nargs="?")
     args = argparser.parse_args(argv[1:])
 
-    img_dir = os.path.abspath(".") + "/" + args.image_dir
+    img_dir = os.path.abspath(".") + "" + args.image_dir
+
+    if not os.path.exists(img_dir):
+        img_dir = args.image_dir
 
     # force the use of the main classes.txt
     predefined_classes_file = os.path.abspath(".") + "/classes.txt"
