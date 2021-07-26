@@ -573,7 +573,7 @@ class MainWindow(QMainWindow, WindowMixin):
         self.displayLabelOption = QAction(getStr("displayLabel"), self)
         self.displayLabelOption.setShortcut("Ctrl+Shift+P")
         self.displayLabelOption.setCheckable(True)
-        self.displayLabelOption.setChecked(settings.get(SETTING_PAINT_LABEL, True))
+        self.displayLabelOption.setChecked(True)
         self.displayLabelOption.triggered.connect(self.togglePaintLabelsOption)
 
         addActions(
