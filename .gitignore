@@ -3,6 +3,10 @@ resources/icons/.DS_Store
 .idea*
 labelImg.egg-info*
 
+images/*
+labels/*
+classes.txt
+
 *.pyc
 .*.swp
 

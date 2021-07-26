@@ -573,7 +573,7 @@ class MainWindow(QMainWindow, WindowMixin):
         self.displayLabelOption = QAction(getStr("displayLabel"), self)
         self.displayLabelOption.setShortcut("Ctrl+Shift+P")
         self.displayLabelOption.setCheckable(True)
-        self.displayLabelOption.setChecked(settings.get(SETTING_PAINT_LABEL, False))
+        self.displayLabelOption.setChecked(settings.get(SETTING_PAINT_LABEL, True))
         self.displayLabelOption.triggered.connect(self.togglePaintLabelsOption)
 
         addActions(
@@ -1532,6 +1532,11 @@ class MainWindow(QMainWindow, WindowMixin):
         return images
 
     def changeSavedirDialog(self, _value=False):
+        self.errorMessage(
+            "Error",
+            "Use the command line to change client.\n Quit the app and restart with a different path/client",
+        )
+        return
         if self.defaultSaveDir is not None:
             path = ustr(self.defaultSaveDir)
         else:
@@ -1577,6 +1582,12 @@ class MainWindow(QMainWindow, WindowMixin):
     def openDirDialog(self, _value=False, dirpath=None, silent=False):
         # if not self.mayContinue():
         #     return
+        if silent == False:
+            self.errorMessage(
+                "Error",
+                "Use the command line to change client.\n Quit the app and restart with a different path/client",
+            )
+            return
 
         defaultOpenDirPath = dirpath if dirpath else "."
         if self.lastOpenDir and os.path.exists(self.lastOpenDir):
@@ -1694,6 +1705,11 @@ class MainWindow(QMainWindow, WindowMixin):
     def openFile(self, _value=False):
         # if not self.mayContinue():
         #     return
+        self.errorMessage(
+            "Error",
+            "Use the command line to change client.\n Quit the app and restart with a different path/client",
+        )
+        return
         path = os.path.dirname(ustr(self.filePath)) if self.filePath else "."
         formats = [
             "*.%s" % fmt.data().decode("ascii").lower()
@@ -1946,7 +1962,13 @@ def get_main_app(argv=[]):
     argparser.add_argument("image_dir", nargs="?")
     args = argparser.parse_args(argv[1:])
 
-    img_dir = os.path.abspath(".") + "" + args.image_dir
+    current_dir = os.path.abspath(".")
+    print("current_dir:", current_dir)
+    print("arg image_dir:", args.image_dir)
+
+    img_dir = os.path.abspath(".") + "/" + args.image_dir
+    img_dir = img_dir.replace("//", "/")
+    print("img_dir:", img_dir)
 
     if not os.path.exists(img_dir):
         img_dir = args.image_dir
