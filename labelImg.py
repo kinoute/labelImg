@@ -975,7 +975,7 @@ class MainWindow(QMainWindow, WindowMixin):
 
     # Tzutalin 20160906 : Add file list and dock to move faster
     def fileitemDoubleClicked(self, item=None):
-        currIndex = self.mImgList.index(ustr(item.text()))
+        currIndex = self.mImgList.index(ustr(re.sub('^\d+\. ', '', item.text())), 1)
         if currIndex < len(self.mImgList):
             filename = self.mImgList[currIndex]
             if filename:
@@ -1624,12 +1624,12 @@ class MainWindow(QMainWindow, WindowMixin):
         num_annotated_files = 0
         self.openNextImg()
         for idx, imgPath in enumerate(self.mImgList):
-            item = QListWidgetItem(imgPath)
+            item = QListWidgetItem(f"{idx+1}. " + imgPath)
             if self.checkForYoloFile(imgPath):
                 item.setBackground(QColor("#82E0AA"))
                 num_annotated_files += 1
             self.fileListWidget.addItem(item)
-            item.setToolTip(f"{idx+1} out of {len(self.mImgList)}\n{imgPath}")
+            item.setToolTip(f"{imgPath}")
         self.filedock.setWindowTitle(f"{len(self.mImgList)} images ({num_annotated_files} annotated)")
 
     def checkForYoloFile(self, imgPath):
