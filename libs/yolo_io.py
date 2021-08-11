@@ -98,8 +98,6 @@ class YoloReader:
         else:
             self.classListPath = classListPath
 
-        # print (filepath, self.classListPath)
-
         classesFile = open(self.classListPath, 'r')
         self.classes = classesFile.read().strip('\n').split('\n')
 
