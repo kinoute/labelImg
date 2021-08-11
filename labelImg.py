@@ -1138,6 +1138,7 @@ class MainWindow(QMainWindow, WindowMixin):
                 fileWidgetItem = self.fileListWidget.item(index)
                 fileWidgetItem.setBackground(QColor("#82E0AA"))
 
+
             elif self.labelFileFormat == LabelFileFormat.CREATE_ML:
                 if annotationFilePath[-5:].lower() != ".json":
                     annotationFilePath += JSON_EXT
@@ -1620,12 +1621,16 @@ class MainWindow(QMainWindow, WindowMixin):
         self.filePath = None
         self.fileListWidget.clear()
         self.mImgList = self.scanAllImages(dirpath)
+        num_annotated_files = 0
         self.openNextImg()
-        for imgPath in self.mImgList:
+        for idx, imgPath in enumerate(self.mImgList):
             item = QListWidgetItem(imgPath)
             if self.checkForYoloFile(imgPath):
                 item.setBackground(QColor("#82E0AA"))
+                num_annotated_files += 1
             self.fileListWidget.addItem(item)
+            item.setToolTip(f"{idx+1} out of {len(self.mImgList)}\n{imgPath}")
+        self.filedock.setWindowTitle(f"{len(self.mImgList)} images ({num_annotated_files} annotated)")
 
     def checkForYoloFile(self, imgPath):
         basename = os.path.basename(os.path.splitext(imgPath)[0])
