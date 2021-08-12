@@ -1346,6 +1346,7 @@ class MainWindow(QMainWindow, WindowMixin):
                 index = self.mImgList.index(unicodeFilePath)
                 fileWidgetItem = self.fileListWidget.item(index)
                 fileWidgetItem.setSelected(True)
+                self.fileListWidget.scrollToItem(fileWidgetItem)
             else:
                 self.fileListWidget.clear()
                 self.mImgList.clear()
